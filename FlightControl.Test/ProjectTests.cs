@@ -38,7 +38,7 @@ namespace FlightControl.Test
             Assert.AreEqual((6, null), result);
         }
         [TestMethod]
-        public void PlaneMovement()
+        public void LandingPlaneMovement()
         {
             List<Airplane> planes = new List<Airplane>();
             Simulation.GeneratePlane(planes, true);

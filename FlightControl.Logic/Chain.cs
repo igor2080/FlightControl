@@ -45,8 +45,8 @@ namespace FlightControl.Logic
                 }
                 else if (nextIndex == 0)//the plane is out of the system(departed, entered the terminal)
                 {
-                    
-                    _slots.RemoveAt(index);
+                    var item = _slots[index].OccupyingPlane;
+                    _slots[index].OccupyingPlane = null;
                     return true;
                     //TODO:log plane removal
                 }
@@ -54,9 +54,9 @@ namespace FlightControl.Logic
                 {
                     if (_slots[nextIndex].OccupyingPlane == null)//there is no plane in the next slot
                     {
-                        var item = _slots[index];
-                        _slots.RemoveAt(index);
-                        _slots[nextIndex] = item;
+                        var item = _slots[index].OccupyingPlane;
+                        _slots[index].OccupyingPlane = null;
+                        _slots[nextIndex].OccupyingPlane = item;
                         return true;
                         //TODO:log plane movement
                     }
