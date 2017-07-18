@@ -46,13 +46,34 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="ProjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FlightControl.Data\FlightControl.Data.csproj">
+      <Project>{0DA965E8-DF9B-46FD-BC54-E173FD5C1DD1}</Project>
+      <Name>FlightControl.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlightControl.Logic\FlightControl.Logic.csproj">
+      <Project>{7f55ad41-6293-4cd7-ab80-a0e5600d56a9}</Project>
+      <Name>FlightControl.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlightControl.Simulator\FlightControl.Simulator.csproj">
+      <Project>{0544a8f3-27ec-4017-b498-30cfa48e4b9a}</Project>
+      <Name>FlightControl.Simulator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlightControl\FlightControl.GUI.csproj">
+      <Project>{f08440a1-2bd0-406d-b895-e9806ad73d57}</Project>
+      <Name>FlightControl.GUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
