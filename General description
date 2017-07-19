@@ -1,0 +1,19 @@
+This system represents a simulation of controlling airport traffic on an airport.
+
+In the system there is an airport that is controlled by a watch tower that dictates the behavior of the planes.
+
+Each plane has the knowledge of where it should move next, but it's movement is limited by the orders of the watch tower; the plane is moved when it's told to move.
+
+The system 'generates' airplanes out of a simulator. The simulator produces planes that are ready to depart or take off.
+
+Each generated plane contains the following information:
+1. A unique identificator(the name of the airplane)
+2. It's purpose(departure/take off), which represents in what way the airplane moves.
+3. It's lifespan; how long the airplane has been in the current system.
+
+The purpose of the system is to provide a way for the watch tower to provide the routing for each plane that enters the system through the simulator.
+
+The watch tower controls the airplanes that are on the airport. The airport is a chain of stations(legs) which represent various points where the planes can move to. Once given a signal, a plane can move from one point to another. The planes have the knowledge of where to move from their current location. It is up to the watch tower to ensure that an airplane moves to a valid spot. A valid spot represents a spot that is not: occupied by another plane, does not have any special conditions that will compromise the system  and that the spot is currently active.
+Other than the watch tower, the system also allows user input regarding certain decisions about the airport:
+1. A user may deactivate a certain station to prevent any plane from moving from or to that staion.
+2. A user may also deactivate a plane to prevent it from moving independently of the station it is in(as long as the plane is controlled by the system).
