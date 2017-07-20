@@ -23,11 +23,17 @@ namespace FlightControl.Data
         /// </summary>
         public DateTime LifeSpan { get; set; }
 
+        /// <summary>
+        /// Represents whether the plane is working or broken, broken airplanes are unable to move
+        /// </summary>
+        public bool IsWorking { get; set; }
+
         public Airplane(byte Id, bool IsLanding, DateTime Lifespan)
         {
             this.ID = Id;
             this.Landing = IsLanding;
             this.LifeSpan = Lifespan;
+            IsWorking = true;
         }
 
         

@@ -44,12 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chain.cs" />
+    <Compile Include="Information.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FlightControl.Data\FlightControl.Data.csproj">
       <Project>{0DA965E8-DF9B-46FD-BC54-E173FD5C1DD1}</Project>
       <Name>FlightControl.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlightControl.Simulator\FlightControl.Simulator.csproj">
+      <Project>{0544A8F3-27EC-4017-B498-30CFA48E4B9A}</Project>
+      <Name>FlightControl.Simulator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

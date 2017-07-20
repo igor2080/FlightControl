@@ -4,6 +4,7 @@ using FlightControl.Data;
 using System.Collections.Generic;
 using FlightControl.Simulator;
 using FlightControl.Logic;
+using System.Threading;
 
 namespace FlightControl.Test
 {
@@ -12,6 +13,10 @@ namespace FlightControl.Test
     {
         private TestContext testContextInstance;
 
+        public ProjectTests()
+        {
+            Main.Start();
+        }
         /// <summary>
         ///  Gets or sets the test context which provides
         ///  information about and functionality for the current test run.
@@ -25,26 +30,24 @@ namespace FlightControl.Test
         [TestMethod]
         public void PlaneGeneration()
         {
-            var planes = new List<Airplane>();
-            int curPlaneCount = planes.Count;
-            Simulation.GeneratePlane(planes, true);
-            Assert.IsTrue(curPlaneCount < planes.Count);
+            var plane = Simulation.GeneratePlane( true);
+            Assert.IsTrue(plane.ID>0 && plane.LifeSpan>DateTime.MinValue && plane.IsWorking);
         }
 
         [TestMethod]
-        public void InitializedChain()
+        public void SystemInitialization()
         {
-            var result = Chain.GetInfo(5);
-            Assert.AreEqual((6, null), result);
+            var result = Chain.GetInfo(1);
+            Assert.IsNotNull(result.CurrentAirplane);
         }
+        
         [TestMethod]
-        public void LandingPlaneMovement()
+        public void DepartingPlaneMovement()
         {
-            List<Airplane> planes = new List<Airplane>();
-            Simulation.GeneratePlane(planes, true);
-            TestContext.WriteLine(Chain.AcceptPlane(planes[0]).ToString());
-            TestContext.WriteLine(Chain.MovePlane(planes[0].ID).ToString());
-            Assert.IsTrue(planes[0].ID == Chain.GetInfo(2).CurrentAirplane.ID);
+            var plane = Simulation.GeneratePlane(false);
+            Chain.AcceptPlane(plane);
+            Chain.MovePlane(plane.ID);
+            Assert.IsTrue(plane.ID == Chain.GetInfo(6).CurrentAirplane.ID);
         }
 
     }
