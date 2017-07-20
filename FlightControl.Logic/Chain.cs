@@ -56,7 +56,7 @@ namespace FlightControl.Logic
                     
                     _slots[index].RemovePlane();
                     
-                    return new Information(0, $"Plane {plane.ID} Has left the system!", InfoCode.LeftTheSystem);
+                    return new Information(0, $"Plane #{plane.ID} Has left the system!", InfoCode.LeftTheSystem);
                     //TODO:log plane removal
                 }
                 else
@@ -69,7 +69,7 @@ namespace FlightControl.Logic
                             _slots[nextIndex].AcceptPlane(plane);
                             //TODO:log plane movement
                             
-                            return new Information(index + 1, $"Plane moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
+                            return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                         }
                         else
                         {//special conditions for station 4(interaction with 8 and 3)
@@ -129,11 +129,11 @@ namespace FlightControl.Logic
                                 _slots[nextIndex].AcceptPlane(plane);
                                 //TODO:log plane movement
                                 
-                                return new Information(index + 1, $"Plane moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
+                                return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                             }
                         }
                         
-                        return new Information(index + 1, $"The plane at station {index + 1} cannot move, the next station is occupied", InfoCode.Occupied);
+                        return new Information(index + 1, $"The plane #{plane.ID} at station {index + 1} cannot move, the next station is occupied", InfoCode.Occupied);
 
                     }
                 }
@@ -224,7 +224,7 @@ namespace FlightControl.Logic
                 {
                     _slots[0].AcceptPlane(plane);
                     //TODO:log plane acceptance
-                    return new Information(1, "Plane accepted successfully into station 1", InfoCode.Success);
+                    return new Information(1, $"Plane #{plane.ID} accepted successfully into station 1", InfoCode.Success);
                 }
                 else//there is a plane in slot 1, plane is rejected
                 {
@@ -244,7 +244,7 @@ namespace FlightControl.Logic
                     {
                         _slots[5].AcceptPlane(plane);
                         //TODO:log plane acceptance
-                        return new Information(6, "Plane accepted successfully into station 6", InfoCode.Success); ;
+                        return new Information(6, $"Plane #{plane.ID} accepted successfully into station 6", InfoCode.Success); ;
                     }
                 }
                 else if (_slots[6].GetCurrentPlane() == null)//slot 7 is empty instead of 6, can accept
@@ -255,7 +255,7 @@ namespace FlightControl.Logic
                     }
                     _slots[6].AcceptPlane(plane);
                     //TODO:log plane acceptance
-                    return new Information(7, "Plane accepted successfully into station 7", InfoCode.Success); ;
+                    return new Information(7, $"Plane #{plane.ID} accepted successfully into station 7", InfoCode.Success); ;
                 }
                 else//both slots are taken, plane is rejected
                 {

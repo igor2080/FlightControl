@@ -4,6 +4,8 @@ using FlightControl.Data;
 using System.Collections.Generic;
 using FlightControl.Simulator;
 using FlightControl.Logic;
+using System.Net;
+using System.Text;
 
 namespace FlightControl.Test
 {
@@ -46,8 +48,9 @@ namespace FlightControl.Test
         public void AddingDepartingPlane()
         {
             var plane = Chain.AcceptPlane(false);
-            Assert.IsTrue(plane.Code==InfoCode.Success);
+            Assert.IsTrue(plane.Code == InfoCode.Success);
         }
+        
 
 
     }
