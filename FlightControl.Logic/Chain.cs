@@ -1,6 +1,7 @@
 ﻿using FlightControl.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace FlightControl.Logic
             int index = _slots.FindIndex(x => x.OccupyingPlane?.ID == planeNumber);
             if (index != -1)//plane found
             {
-                if ((_slots[index].PlaneArrivalToStation - DateTime.Now).TotalSeconds < 5)
+                if ((DateTime.Now - _slots[index].PlaneArrivalToStation).TotalSeconds < 5)
                 {//The plane has just arrived, do not move it
                     return new Information(index + 1, "The plane has just arrived", InfoCode.JustArrived);
                 }
@@ -53,6 +54,7 @@ namespace FlightControl.Logic
                     var item = _slots[index].OccupyingPlane;
                     _slots[index].OccupyingPlane = null;
                     _slots[index].PlaneArrivalToStation = DateTime.MinValue;
+                    Debug.WriteLine($"Plane {item.ID} Has left the system!");
                     return new Information(0, "The plane has left the system", InfoCode.LeftTheSystem);
                     //TODO:log plane removal
                 }
@@ -65,8 +67,10 @@ namespace FlightControl.Logic
                         _slots[index].PlaneArrivalToStation = DateTime.MinValue;
                         _slots[nextIndex].OccupyingPlane = item;
                         _slots[nextIndex].PlaneArrivalToStation = DateTime.Now;
-                        return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
                         //TODO:log plane movement
+                        Debug.WriteLine($"Plane moved from station {index + 1} to station {nextIndex + 1}");
+                        return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
+
                     }
                     else // there is a plane in the next slot
                     {
