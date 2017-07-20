@@ -39,18 +39,12 @@ namespace FlightControl.Logic
             var information = new List<Information>();
             if (planeToUpdate == null)
             {
-
-                for (int i = 1; i < Chain.NumberOfStations; i++)
+                Parallel.For(1, 10, (i) =>
                 {
-                    Task.Run(() =>
-                    {
-                        if (Chain.GetPlaneInfo(i) != null)
-                            information.Add(Chain.UpdateStation(i));
+                    if (Chain.GetPlaneInfo(i) != null)
+                        information.Add(Chain.UpdateStation(i));
 
-                    });
-
-                }
-
+                });
             }
             else
             {
@@ -73,7 +67,7 @@ namespace FlightControl.Logic
                 clock.Elapsed += Clock_Elapsed;
                 Chain.InitializeChain();
                 LoadState(); //TODO:implement state load
-                var plane = Simulation.GeneratePlane(true);
+                var plane = Simulation.GeneratePlane(false);
                 Chain.AcceptPlane(plane);
                 //TODO:log start sequence
                 clock.Start();
