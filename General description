@@ -17,3 +17,9 @@ The watch tower controls the airplanes that are on the airport. The airport is a
 Other than the watch tower, the system also allows user input regarding certain decisions about the airport:
 1. A user may deactivate a certain station to prevent any plane from moving from or to that staion.
 2. A user may also deactivate a plane to prevent it from moving independently of the station it is in(as long as the plane is controlled by the system).
+
+Basic design:
+https://www.draw.io/#Hmaster2080%2FFlightControl%2Fmaster%2FBasic%20Diagram.xml
+
+Detailed design:
+https://www.draw.io/#Hmaster2080%2FFlightControl%2Fmaster%2FDetailed%20Diagram.xml
