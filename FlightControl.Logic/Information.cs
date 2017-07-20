@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,7 @@ namespace FlightControl.Logic
             StationID = stationid;
             Message = msg;
             Code = code;
+            Debug.WriteLine(Message); //super logging mode
         }
     }
 

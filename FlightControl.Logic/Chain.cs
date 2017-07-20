@@ -1,4 +1,5 @@
 ﻿using FlightControl.Data;
+using FlightControl.Simulator;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,7 +43,7 @@ namespace FlightControl.Logic
             {
                 if ((DateTime.Now - _slots[index].PlaneArrivalToStation).TotalSeconds < 5)
                 {//The plane has just arrived, do not move it
-                    return new Information(index + 1, "The plane has just arrived", InfoCode.JustArrived);
+                    return new Information(index + 1, "The plane cannot move yet, it has just arrived", InfoCode.JustArrived);
                 }
                 int nextIndex = GetNextSlot(index + 1, _slots[index].GetCurrentPlane().Landing) - 1;
                 if (nextIndex == -2)//invalid slot number returned
@@ -73,7 +74,7 @@ namespace FlightControl.Logic
                         else
                         {//special conditions for station 4(interaction with 8 and 3)
 
-                            if (_slots[2] != null && _slots[7] != null)
+                            if (_slots[2].GetCurrentPlane() != null && _slots[7].GetCurrentPlane() != null)
                             {//there are planes in both 3 and 8, compare timers
 
                                 bool Station3Priority = _slots[2].PlaneArrivalToStation <= _slots[7].PlaneArrivalToStation.AddSeconds(15.0);
@@ -122,7 +123,23 @@ namespace FlightControl.Logic
                     }
                     else // there is a plane in the next slot
                     {
+                        if (nextIndex == 5)
+                        {//there is a plane in station 6, there might be room in 7
+
+                            if (_slots[6].GetCurrentPlane() == null)
+                            {//there is!
+                                nextIndex = 6;
+                                var item = _slots[index].GetCurrentPlane();
+                                _slots[index].RemovePlane();
+                                _slots[nextIndex].AcceptPlane(item);
+                                //TODO:log plane movement
+                                Debug.WriteLine($"Plane moved from station {index + 1} to station {nextIndex + 1}");
+                                return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
+                            }
+                        }
+                        Debug.WriteLine(index + 1, $"The plane at station {index + 1} cannot move, the next station is occupied");
                         return new Information(index + 1, "The plane cannot move, the next station is occupied", InfoCode.Occupied);
+
                     }
                 }
             }
@@ -201,10 +218,11 @@ namespace FlightControl.Logic
         /// <summary>
         /// Add a plane into the system
         /// </summary>
-        /// <param name="plane">The plane to add</param>
+        /// <param name="isLanding">Is the plane landing or taking off?</param>
         /// <returns>Information about the action's success</returns>
-        public static Information AcceptPlane(Airplane plane)
+        public static Information AcceptPlane(bool isLanding)
         {
+            var plane = Simulation.GeneratePlane(isLanding);
             if (plane.Landing)
             {
                 if (_slots[0].GetCurrentPlane() == null)//no plane in slot 1
@@ -223,12 +241,23 @@ namespace FlightControl.Logic
             {
                 if (_slots[5].GetCurrentPlane() == null)//slot 6 is empty, can accept
                 {
-                    _slots[5].AcceptPlane(plane);
-                    //TODO:log plane acceptance
-                    return new Information(6, "Plane accepted successfully into station 6", InfoCode.Success); ;
+                    if (_slots[6].GetCurrentPlane() != null && !_slots[6].GetCurrentPlane().Landing)
+                    {//There is a plane in station 7 that is also departing, unable to add another departing plane!
+                        return new Information(6, "Cannot have two departing planes at docking stations!", InfoCode.Occupied);
+                    }
+                    else
+                    {
+                        _slots[5].AcceptPlane(plane);
+                        //TODO:log plane acceptance
+                        return new Information(6, "Plane accepted successfully into station 6", InfoCode.Success); ;
+                    }
                 }
-                else if (_slots[6].GetCurrentPlane() == null)//slot 7 is empty instead of 6, can still accept
+                else if (_slots[6].GetCurrentPlane() == null)//slot 7 is empty instead of 6, can accept
                 {
+                    if (_slots[5].GetCurrentPlane() != null && !_slots[5].GetCurrentPlane().Landing)
+                    {//There is a plane in station 6 that is also departing, unable to add another departing plane!
+                        return new Information(7, "Cannot have two departing planes at docking stations!", InfoCode.Occupied);
+                    }
                     _slots[6].AcceptPlane(plane);
                     //TODO:log plane acceptance
                     return new Information(7, "Plane accepted successfully into station 7", InfoCode.Success); ;

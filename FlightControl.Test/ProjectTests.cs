@@ -43,13 +43,12 @@ namespace FlightControl.Test
         }
 
         [TestMethod]
-        public void DepartingPlaneMovement()
+        public void AddingDepartingPlane()
         {
-            var plane = Simulation.GeneratePlane(false);
-            Chain.AcceptPlane(plane);
-            Chain.MovePlane(plane.ID);
-            Assert.IsTrue(plane.ID == Chain.GetPlaneInfo(6).ID);
+            var plane = Chain.AcceptPlane(false);
+            Assert.IsTrue(plane.Code==InfoCode.Success);
         }
+
 
     }
 }
