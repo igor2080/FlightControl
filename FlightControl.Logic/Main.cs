@@ -20,7 +20,7 @@ namespace FlightControl.Logic
         /// <param name="e"></param>
         private static void Clock_Elapsed(object sender, ElapsedEventArgs e)
         {
-            clock.Stop();//TODO: remove after testing
+            
             Update();
         }
 
@@ -32,6 +32,7 @@ namespace FlightControl.Logic
         /// <returns>Information about each affected station</returns>
         private static List<Information> Update(Airplane planeToUpdate=null)
         {
+            clock.Stop();
             var information = new List<Information>();
             if (planeToUpdate==null)
             {
@@ -46,6 +47,7 @@ namespace FlightControl.Logic
                 information.Add(info);
                 
             }
+            clock.Start();
             return information;
         }
 

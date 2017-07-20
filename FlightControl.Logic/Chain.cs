@@ -22,15 +22,11 @@ namespace FlightControl.Logic
         /// Retrieves information about a specific station(leg)
         /// </summary>
         /// <param name="station"></param>
-        public static (int Number, Airplane CurrentAirplane) GetInfo(int station)
+        public static Airplane GetPlaneInfo(int station)
         {
             //treat the parameter as an actual station number, 
             //the array still starts at zero
-            if (station < 1 || station > 9)
-            {
-                return (0, null);
-            }
-            return (_slots[station - 1].Number, _slots[station - 1].OccupyingPlane);
+            return _slots[station - 1]?.OccupyingPlane;
         }
 
         /// <summary>
@@ -43,7 +39,7 @@ namespace FlightControl.Logic
             int index = _slots.FindIndex(x => x.OccupyingPlane?.ID == planeNumber);
             if (index != -1)//plane found
             {
-                if((_slots[index].PlaneArrivalToStation - DateTime.Now).TotalSeconds < 5)
+                if ((_slots[index].PlaneArrivalToStation - DateTime.Now).TotalSeconds < 5)
                 {//The plane has just arrived, do not move it
                     return new Information(index + 1, "The plane has just arrived", InfoCode.JustArrived);
                 }
@@ -91,8 +87,10 @@ namespace FlightControl.Logic
         /// <returns>Information whether the movement happened or not</returns>
         public static Information UpdateStation(int stationNumber)
         {
-            var station = GetInfo(stationNumber);//get the station
-            var planeMovement = MovePlane(station.CurrentAirplane.ID);//try moving the plane
+            var plane = GetPlaneInfo(stationNumber);//get the plane
+            if (plane == null)
+                return new Information(stationNumber, "There is no plane", InfoCode.NotFound);
+            var planeMovement = MovePlane(plane.ID);//try moving the plane
             return planeMovement;
         }
 
@@ -148,8 +146,12 @@ namespace FlightControl.Logic
             }
 
         }
-
-        public static bool AcceptPlane(Airplane plane)
+        /// <summary>
+        /// Add a plane into the system
+        /// </summary>
+        /// <param name="plane">The plane to add</param>
+        /// <returns>Information about the action's success</returns>
+        public static Information AcceptPlane(Airplane plane)
         {
             if (plane.Landing)
             {
@@ -158,12 +160,12 @@ namespace FlightControl.Logic
                     _slots[0].OccupyingPlane = plane;
                     _slots[0].PlaneArrivalToStation = DateTime.Now;
                     //TODO:log plane acceptance
-                    return true;
+                    return new Information(1, "Plane accepted successfully into station 1", InfoCode.Success);
                 }
                 else//there is a plane in slot 1, plane is rejected
                 {
                     //TODO:log plane rejection
-                    return false;
+                    return new Information(-1, "There is no room for a plane", InfoCode.Error);
                 }
             }
             else//plane is departing
@@ -173,18 +175,18 @@ namespace FlightControl.Logic
                     _slots[5].OccupyingPlane = plane;
                     _slots[5].PlaneArrivalToStation = DateTime.Now;
                     //TODO:log plane acceptance
-                    return true;
+                    return new Information(6, "Plane accepted successfully into station 6", InfoCode.Success); ;
                 }
-                else if (_slots[6].OccupyingPlane == null)
+                else if (_slots[6].OccupyingPlane == null)//slot 7 is empty instead of 6, can still accept
                 {
                     _slots[6].OccupyingPlane = plane;
                     _slots[6].PlaneArrivalToStation = DateTime.Now;
                     //TODO:log plane acceptance
-                    return true;
+                    return new Information(7, "Plane accepted successfully into station 7", InfoCode.Success); ;
                 }
                 else//both slots are taken, plane is rejected
                 {
-                    return false;
+                    return new Information(-1, "There is no room for a plane", InfoCode.Error);
                     //TODO:log plane rejection
 
                 }
@@ -201,6 +203,7 @@ namespace FlightControl.Logic
             /// Slot number in the chain
             /// </summary>
             public byte Number { get; set; }
+
             /// <summary>
             /// The plane that is in this slot
             /// </summary>
@@ -210,6 +213,12 @@ namespace FlightControl.Logic
             /// When a plane has arrived in the current station
             /// </summary>
             public DateTime PlaneArrivalToStation { get; set; }
+
+            /// <summary>
+            /// Indicates whether the current station is operating
+            /// </summary>
+            public bool IsActive { get; set; }
+
 
             public Slot(byte num)
             {

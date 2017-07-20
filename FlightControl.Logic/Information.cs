@@ -15,6 +15,8 @@ namespace FlightControl.Logic
         Moved = 8,
         Occupied = 16,
         Success = 32,
+        Error = 64,
+
     }
     /// <summary>
     /// Used to provide information about specific actions; whether they were successful or not
