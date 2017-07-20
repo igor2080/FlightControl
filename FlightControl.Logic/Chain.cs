@@ -41,21 +41,22 @@ namespace FlightControl.Logic
             int index = _slots.FindIndex(x => x.GetCurrentPlane()?.ID == planeNumber);
             if (index != -1)//plane found
             {
+                var plane = _slots[index].GetCurrentPlane();
                 if ((DateTime.Now - _slots[index].PlaneArrivalToStation).TotalSeconds < 5)
                 {//The plane has just arrived, do not move it
-                    return new Information(index + 1, "The plane cannot move yet, it has just arrived", InfoCode.JustArrived);
+                    return new Information(index + 1, $"The plane #{plane.ID} cannot move yet, it has just arrived", InfoCode.JustArrived);
                 }
                 int nextIndex = GetNextSlot(index + 1, _slots[index].GetCurrentPlane().Landing) - 1;
                 if (nextIndex == -2)//invalid slot number returned
                 {
-                    return new Information(-1, "The plane is located in an invalid station", InfoCode.Invalid);
+                    return new Information(-1, $"The plane #{plane.ID} is located in an invalid station", InfoCode.Invalid);
                 }
                 else if (nextIndex == -1)//the plane is out of the system(departed, entered the terminal)
                 {
-                    var item = _slots[index].GetCurrentPlane();
+                    
                     _slots[index].RemovePlane();
-                    Debug.WriteLine($"Plane {item.ID} Has left the system!");
-                    return new Information(0, "The plane has left the system", InfoCode.LeftTheSystem);
+                    Debug.WriteLine($"Plane {plane.ID} Has left the system!");
+                    return new Information(0, $"The plane #{plane.ID} has left the system", InfoCode.LeftTheSystem);
                     //TODO:log plane removal
                 }
                 else
@@ -64,12 +65,11 @@ namespace FlightControl.Logic
                     {
                         if (nextIndex != 3)
                         {
-                            var item = _slots[index].GetCurrentPlane();
                             _slots[index].RemovePlane();
-                            _slots[nextIndex].AcceptPlane(item);
+                            _slots[nextIndex].AcceptPlane(plane);
                             //TODO:log plane movement
                             Debug.WriteLine($"Plane moved from station {index + 1} to station {nextIndex + 1}");
-                            return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
+                            return new Information(index + 1, $"The plane #{plane.ID} has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
                         }
                         else
                         {//special conditions for station 4(interaction with 8 and 3)
@@ -83,39 +83,36 @@ namespace FlightControl.Logic
                                 {
                                     if (Station3Priority)
                                     {//current plane is from station 3, and has priority
-                                        var item = _slots[index].GetCurrentPlane();
                                         _slots[index].RemovePlane();
-                                        _slots[nextIndex].AcceptPlane(item);
+                                        _slots[nextIndex].AcceptPlane(plane);
                                         //TODO:log plane movement
-                                        Debug.WriteLine($"Plane moved from station {index + 1} to station {nextIndex + 1}");
-                                        return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
+                                        Debug.WriteLine($"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}");
+                                        return new Information(index + 1, $"The plane #{plane.ID} has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
 
                                     }
-                                    else return new Information(index + 1, "The plane isn't allowed to move due to priority", InfoCode.MovementForbidden);
+                                    else return new Information(index + 1, $"The plane #{plane.ID} isn't allowed to move due to priority", InfoCode.MovementForbidden);
                                 }
                                 else //index == 7
                                 {
                                     if (!Station3Priority)
                                     {//current plane is from station 8, and has priority
-                                        var item = _slots[index].GetCurrentPlane();
                                         _slots[index].RemovePlane();
-                                        _slots[nextIndex].AcceptPlane(item);
+                                        _slots[nextIndex].AcceptPlane(plane);
                                         //TODO:log plane movement
-                                        Debug.WriteLine($"Plane moved from station {index + 1} to station {nextIndex + 1}");
-                                        return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
+                                        Debug.WriteLine($"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}");
+                                        return new Information(index + 1, $"The plane #{plane.ID} has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
 
                                     }
-                                    else return new Information(index + 1, "The plane isn't allowed to move due to priority", InfoCode.MovementForbidden);
+                                    else return new Information(index + 1, $"The plane #{plane.ID} isn't allowed to move due to priority", InfoCode.MovementForbidden);
                                 }
                             }
                             else
                             {//only one plane in either station, proceed as normal
-                                var item = _slots[index].GetCurrentPlane();
                                 _slots[index].RemovePlane();
-                                _slots[nextIndex].AcceptPlane(item);
+                                _slots[nextIndex].AcceptPlane(plane);
                                 //TODO:log plane movement
-                                Debug.WriteLine($"Plane moved from station {index + 1} to station {nextIndex + 1}");
-                                return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
+                                Debug.WriteLine($"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}");
+                                return new Information(index + 1, $"The plane #{plane.ID} has moved to station {nextIndex + 1} successfully", InfoCode.Moved);
 
                             }
                         }
@@ -129,9 +126,8 @@ namespace FlightControl.Logic
                             if (_slots[6].GetCurrentPlane() == null)
                             {//there is!
                                 nextIndex = 6;
-                                var item = _slots[index].GetCurrentPlane();
                                 _slots[index].RemovePlane();
-                                _slots[nextIndex].AcceptPlane(item);
+                                _slots[nextIndex].AcceptPlane(plane);
                                 //TODO:log plane movement
                                 Debug.WriteLine($"Plane moved from station {index + 1} to station {nextIndex + 1}");
                                 return new Information(index + 1, $"The plane has moved to station {nextIndex + 1} successfully", InfoCode.Moved);

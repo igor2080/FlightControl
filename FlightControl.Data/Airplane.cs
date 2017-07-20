@@ -11,7 +11,7 @@ namespace FlightControl.Data
         /// <summary>
         /// Plane number
         /// </summary>
-        public byte ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// Has the plane landed, or is taking off?
@@ -28,7 +28,7 @@ namespace FlightControl.Data
         /// </summary>
         public bool IsWorking { get; set; }
 
-        public Airplane(byte Id, bool IsLanding, DateTime Lifespan)
+        public Airplane(int Id, bool IsLanding, DateTime Lifespan)
         {
             this.ID = Id;
             this.Landing = IsLanding;

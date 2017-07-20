@@ -18,6 +18,11 @@ namespace FlightControl.Controllers
             return info.Code == InfoCode.Success;
             
         }
+        [HttpGet]
+        public string GetLog()
+        {
+            return Information.GetLogPiece()?.Message;
+        }
         
     }
 }

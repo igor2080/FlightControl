@@ -22,7 +22,7 @@ namespace FlightControl.Simulator
         public static Airplane GeneratePlane( bool IsLanding)
         {
             return new Airplane(
-                (byte)_seed.Next(1, 254)
+                _seed.Next(100000, 999999)
                 , IsLanding,
                 DateTime.Now);
 

@@ -25,6 +25,7 @@ namespace FlightControl.Logic
     /// </summary>
     public class Information
     {
+        static Queue<Information> log = new Queue<Information>();
         /// <summary>
         /// ID of the station
         /// </summary>
@@ -40,13 +41,21 @@ namespace FlightControl.Logic
         /// </summary>
         public InfoCode Code { get; set; }
 
-
+        public static Information GetLogPiece()
+        {
+            if (log.Count != 0)
+            {
+                return log.Dequeue();
+            }
+            else return null;
+        }
         public Information(int stationid, string msg, InfoCode code)
         {
             StationID = stationid;
             Message = msg;
             Code = code;
-            Debug.WriteLine(Message); //super logging mode
+            log.Enqueue(this);
+            
         }
     }
 

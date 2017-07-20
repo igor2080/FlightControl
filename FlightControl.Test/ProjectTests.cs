@@ -30,7 +30,7 @@ namespace FlightControl.Test
         public void PlaneGeneration()
         {
             var plane = Simulation.GeneratePlane(true);
-            Assert.IsTrue(plane.ID > 0 &&
+            Assert.IsTrue(plane.ID > 100000 &&
                 plane.LifeSpan > DateTime.MinValue &&
                 plane.IsWorking);
         }
