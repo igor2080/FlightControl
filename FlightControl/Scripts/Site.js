@@ -9,7 +9,7 @@ setInterval(function () {
         if (data !== null) {
             var para = document.createElement("p");
             var number = parseInt(data.substring(data.indexOf('#') + 1));
-            para.style.backgroundColor = "#" + number;
+            para.style.color = "#" + number;
             var node = document.createTextNode(data);
             para.appendChild(node);
             $("#logger").append(para);
