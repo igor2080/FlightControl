@@ -38,7 +38,12 @@ namespace FlightControl.Logic
         /// <returns></returns>
         public static Information MovePlane(int planeNumber)
         {
+            //find what station the plane is in. station = index + 1
             int index = _slots.FindIndex(x => x.GetCurrentPlane()?.ID == planeNumber);
+            if (_slots[index].IsActive == false)
+            {//station closed, no plane can get in or out
+                return new Information(index + 1, $"Station #{index + 1} is closed! cannot move planes in or to it", InfoCode.Closed);
+            }
             if (index != -1)//plane found
             {
                 var plane = _slots[index].GetCurrentPlane();
@@ -47,15 +52,18 @@ namespace FlightControl.Logic
                     return new Information(index + 1, $"The plane #{plane.ID} cannot move yet, it has just arrived", InfoCode.JustArrived);
                 }
                 int nextIndex = GetNextSlot(index + 1, _slots[index].GetCurrentPlane().Landing) - 1;
+                throw new NotImplementedException("Do the next station is closed logic!");
+                if (_slots[nextIndex].IsActive == false)
+                {//next station is closed, cannot move planes to it
+                    //TODO: next station is closed(and logic for station 6+7)
+                }
                 if (nextIndex == -2)//invalid slot number returned
                 {
                     return new Information(-1, $"The plane #{plane.ID} is located in an invalid station", InfoCode.Invalid);
                 }
                 else if (nextIndex == -1)//the plane is out of the system(departed, entered the terminal)
                 {
-                    
                     _slots[index].RemovePlane();
-                    
                     return new Information(0, $"Plane #{plane.ID} Has left the system!", InfoCode.LeftTheSystem);
                     //TODO:log plane removal
                 }
@@ -68,7 +76,7 @@ namespace FlightControl.Logic
                             _slots[index].RemovePlane();
                             _slots[nextIndex].AcceptPlane(plane);
                             //TODO:log plane movement
-                            
+
                             return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                         }
                         else
@@ -76,7 +84,6 @@ namespace FlightControl.Logic
 
                             if (_slots[2].GetCurrentPlane() != null && _slots[7].GetCurrentPlane() != null)
                             {//there are planes in both 3 and 8, compare timers
-
                                 bool Station3Priority = _slots[2].PlaneArrivalToStation <= _slots[7].PlaneArrivalToStation.AddSeconds(15.0);
                                 //station 3 has priority of 15 seconds over 8 
                                 if (index == 2)
@@ -87,7 +94,6 @@ namespace FlightControl.Logic
                                         _slots[nextIndex].AcceptPlane(plane);
                                         //TODO:log plane movement
                                         return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
-
                                     }
                                     else return new Information(index + 1, $"The plane #{plane.ID} isn't allowed to move due to priority", InfoCode.MovementForbidden);
                                 }
@@ -98,9 +104,7 @@ namespace FlightControl.Logic
                                         _slots[index].RemovePlane();
                                         _slots[nextIndex].AcceptPlane(plane);
                                         //TODO:log plane movement
-                                        
                                         return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
-
                                     }
                                     else return new Information(index + 1, $"The plane #{plane.ID} isn't allowed to move due to priority", InfoCode.MovementForbidden);
                                 }
@@ -110,9 +114,7 @@ namespace FlightControl.Logic
                                 _slots[index].RemovePlane();
                                 _slots[nextIndex].AcceptPlane(plane);
                                 //TODO:log plane movement
-                                
                                 return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
-
                             }
                         }
 
@@ -128,13 +130,10 @@ namespace FlightControl.Logic
                                 _slots[index].RemovePlane();
                                 _slots[nextIndex].AcceptPlane(plane);
                                 //TODO:log plane movement
-                                
                                 return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                             }
                         }
-                        
                         return new Information(index + 1, $"The plane #{plane.ID} at station {index + 1} cannot move, the next station is occupied", InfoCode.Occupied);
-
                     }
                 }
             }
@@ -266,6 +265,38 @@ namespace FlightControl.Logic
 
             }
         }
+        /// <summary>
+        /// Closes a station
+        /// </summary>
+        /// <param name="station">Station number</param>
+        /// <returns>Returns information on whether the operation was successful</returns>
+        public static Information CloseStation(int station)
+        {
+            if (_slots[station - 1].IsActive)
+            {
+                _slots[station - 1].IsActive = false;
+                return new Information(station, $"Station #{station} is now closed!", InfoCode.Closed);
+            }
+            return new Information(station, $"Station #{station} was already closed!", InfoCode.Error);
+        }
+
+        /// <summary>
+        /// Opens a station
+        /// </summary>
+        /// <param name="station">Station number</param>
+        /// <returns>Returns information on whether the operation was successful</returns>
+        public static Information OpenStation(int station)
+        {
+            if (!_slots[station - 1].IsActive)
+            {
+                _slots[station - 1].IsActive = true;
+                return new Information(station, $"Station #{station} is now open!", InfoCode.Open);
+            }
+            return new Information(station, $"Station #{station} was already open!", InfoCode.Error);
+        }
+
+
+
 
         /// <summary>
         /// Represents an entity in the chain, a leg
@@ -325,6 +356,7 @@ namespace FlightControl.Logic
             {
                 Number = num;
                 PlaneArrivalToStation = DateTime.MinValue;
+                IsActive = true;
 
             }
 

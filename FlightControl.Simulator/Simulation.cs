@@ -24,9 +24,7 @@ namespace FlightControl.Simulator
             return new Airplane(
                 _seed.Next(100000, 999999)
                 , IsLanding,
-                DateTime.Now);
-
-            
+                DateTime.Now);            
         }
 
     }

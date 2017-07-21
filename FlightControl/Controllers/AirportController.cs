@@ -23,6 +23,18 @@ namespace FlightControl.Controllers
         {
             return Information.GetLogPiece()?.Message;
         }
+        [HttpGet]
+        public string CloseStation(int num)
+        {
+            var result = Chain.CloseStation(num);
+            return result.Message;
+        }
+        [HttpGet]
+        public string OpenStation(int num)
+        {
+            var result = Chain.OpenStation(num);
+            return result.Message;
+        }
         
     }
 }

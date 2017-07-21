@@ -17,7 +17,10 @@ namespace FlightControl.Logic
         Occupied = 16,
         Success = 32,
         Error = 64,
-        MovementForbidden = 128
+        MovementForbidden = 128,
+        Open = 256,
+        Closed = 512,
+
 
     }
     /// <summary>
