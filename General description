@@ -23,3 +23,48 @@ https://www.draw.io/#Hmaster2080%2FFlightControl%2Fmaster%2FBasic%20Diagram.xml
 
 Detailed design:
 https://www.draw.io/#Hmaster2080%2FFlightControl%2Fmaster%2FDetailed%20Diagram.xml
+
+Description of each part:
+
+GUI:
+The User Interface allows the user to watch the status of the airport live, and interact with certain actions:
+The user may add both departing and arriving planes to the system.
+The user may close or open any of the stations on the airport to prevent that station from functioning.Planes may not move from or to a close station.
+The user may also add a plane that will perform an emergency landing. This plane will have the highest priority so it can land safely. The emergency landing plane can be added as a new plane, or a plane that is currently in stations 1-3.
+The user may also stop the system, which will cause it to save and shut down.
+
+API:
+The API allows the user to apply the listed above actions on to the system. The API's job is to receive input from the user and direct it to the system for processing.
+The API is also responsible in letting the user know(via the GUI) about the status of the airport, and the status of an action that the user performed.
+The API takes the user input and processes it for the system to use it.
+The API also gives the user output that is sent via the logic.
+
+Database:
+
+The database has two functionalities: It stores the state of the system, and the system's logs.
+The state of the system is saved when the system is taken down. 
+The database stores the information in such a way that allows the system to read it and restore itself back to the same conditions.
+Upon the system's start-up, the database will provide the state for the system to use.
+The database also stores all of the logging of the system.
+The logs represent almost every action that happens in the system, from start up, to a plane successfully leaving the system.
+The logs interact with the database in a one way direction. They are only written into the database.
+
+Simulatior:
+
+The simulator provides the system a way to generate planes that will be used by the system.
+The simulator can generate both departing and arriving planes. It is up to the system to know what to do with the planes.
+
+Data:
+
+The data module provides access to the airplane entity, the logging entity , and the database.
+The system uses the data module to perform all the database actions. 
+
+
+Logic:
+
+This module is the core of the system, it performs most of the actions regarding the state of the airport.
+It is reponsible for moving the airplanes, toggling the stations and starting or stopping the system.
+The logic runs autonomously and updates the airport based on an interval, but it can also perform user requests.
+The logic interacts with every part of the system:
+Processing user input that it gets from the API.
+Returns output to the API for the user.
