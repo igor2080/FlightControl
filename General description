@@ -68,3 +68,7 @@ The logic runs autonomously and updates the airport based on an interval, but it
 The logic interacts with every part of the system:
 Processing user input that it gets from the API.
 Returns output to the API for the user.
+Sends logs to the data module.
+Saves/loads the system state via the data module.
+Request new airplanes from the simulator module.
+
