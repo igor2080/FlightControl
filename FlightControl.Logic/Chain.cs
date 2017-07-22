@@ -207,7 +207,7 @@ namespace FlightControl.Logic
         /// <summary>
         /// Fill up the chain with slots
         /// </summary>
-        public static void InitializeChain()
+        public static Information InitializeChain()
         {
             if (!IsInitialized)
             {
@@ -219,8 +219,10 @@ namespace FlightControl.Logic
                 }
                 IsInitialized = true;
                 //TODO: Log start
+                return new Information(-1, "The system has started successfully!", InfoCode.Started);
             }
-
+            return new Information(-1, "The system is already running.", InfoCode.Error);
+            
         }
         /// <summary>
         /// Add a plane into the system
@@ -285,12 +287,16 @@ namespace FlightControl.Logic
         /// <returns>Returns information on whether the operation was successful</returns>
         public static Information CloseStation(int station)
         {
-            if (_slots[station - 1].IsActive)
+            if (station > 0 && station < 10)
             {
-                _slots[station - 1].IsActive = false;
-                return new Information(station, $"Station #{station} is now closed!", InfoCode.Closed);
+                if (_slots[station - 1].IsActive)
+                {
+                    _slots[station - 1].IsActive = false;
+                    return new Information(station, $"Station #{station} is now closed!", InfoCode.Closed);
+                }
+                return new Information(station, $"Station #{station} is already closed!", InfoCode.Error);
             }
-            return new Information(station, $"Station #{station} was already closed!", InfoCode.Error);
+            else return new Information(-1, "Invalid station number!", InfoCode.Invalid);
         }
 
         /// <summary>
@@ -300,12 +306,17 @@ namespace FlightControl.Logic
         /// <returns>Returns information on whether the operation was successful</returns>
         public static Information OpenStation(int station)
         {
-            if (!_slots[station - 1].IsActive)
+            if (station > 0 && station < 10)
             {
-                _slots[station - 1].IsActive = true;
-                return new Information(station, $"Station #{station} is now open!", InfoCode.Open);
+                if (!_slots[station - 1].IsActive)
+                {
+                    _slots[station - 1].IsActive = true;
+                    return new Information(station, $"Station #{station} is now open!", InfoCode.Open);
+                }
+                return new Information(station, $"Station #{station} is already open!", InfoCode.Error);
             }
-            return new Information(station, $"Station #{station} was already open!", InfoCode.Error);
+            else return new Information(-1, "Invalid station number!", InfoCode.Invalid);
+
         }
 
 

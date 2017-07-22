@@ -66,8 +66,7 @@ namespace FlightControl.Logic
             {
                 clock.Elapsed += Clock_Elapsed;
                 Chain.InitializeChain();
-                LoadState(); //TODO:implement state load
-                Chain.AcceptPlane(false);
+                LoadState();                
                 //TODO:log start sequence
                 clock.Start();
                 started = true;
@@ -78,8 +77,8 @@ namespace FlightControl.Logic
         /// Loads an existing state from the database
         /// </summary>
         private static void LoadState()
-        {//temporary testing
-            Chain.AcceptPlane(true);
+        {
+            //TODO:implement state load 
         }
 
         /// <summary>

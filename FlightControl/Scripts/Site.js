@@ -1,9 +1,18 @@
-﻿function DoStuff(i) {
+﻿function AddPlane(i) {
     $.get("/api/Airport/AddPlane?state=" + i, function (data) {
 
     });
 }
+function CloseStation() {
+    $.get("/api/Airport/CloseStation?station=" + $("#station").val(), function (data) {
 
+    });
+}
+function OpenStation() {
+    $.get("/api/Airport/OpenStation?station=" + $("#station").val(), function (data) {
+
+    });
+}
 setInterval(function () {
     $.get("/api/Airport/GetLog", function (data) {
         if (data !== null) {

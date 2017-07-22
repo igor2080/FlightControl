@@ -24,15 +24,15 @@ namespace FlightControl.Controllers
             return Information.GetLogPiece()?.Message;
         }
         [HttpGet]
-        public string CloseStation(int num)
+        public string CloseStation(int station)
         {
-            var result = Chain.CloseStation(num);
+            var result = Chain.CloseStation(station);
             return result.Message;
         }
         [HttpGet]
-        public string OpenStation(int num)
+        public string OpenStation(int station)
         {
-            var result = Chain.OpenStation(num);
+            var result = Chain.OpenStation(station);
             return result.Message;
         }
         
