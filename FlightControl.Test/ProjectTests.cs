@@ -7,6 +7,7 @@ using FlightControl.Logic;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Collections;
 
 namespace FlightControl.Test
 {
@@ -78,7 +79,9 @@ namespace FlightControl.Test
         {
             var result = Chain.OpenStation(6);
             Assert.IsTrue(result.Code == InfoCode.Error);
+            
         }
+       
 
 
     }
