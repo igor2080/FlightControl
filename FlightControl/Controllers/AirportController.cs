@@ -19,9 +19,9 @@ namespace FlightControl.Controllers
             
         }
         [HttpGet]
-        public string GetLog()
+        public Information GetLog()
         {
-            return Information.GetLogPiece()?.Message;
+            return Information.GetLogPiece();
         }
         [HttpGet]
         public string CloseStation(int station)
@@ -35,6 +35,11 @@ namespace FlightControl.Controllers
             var result = Chain.OpenStation(station);
             return result.Message;
         }
-        
+        [HttpGet]
+        public Chain.SlotInfo GetStation(int station)
+        {
+            var result = Chain.GetStationInfo(station);
+            return result;
+        }
     }
 }

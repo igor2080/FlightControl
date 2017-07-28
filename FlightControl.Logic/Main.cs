@@ -79,6 +79,7 @@ namespace FlightControl.Logic
         private static void LoadState()
         {
             //TODO:implement state load 
+            
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace FlightControl.Logic
     {
         private static List<Slot> _slots;
 
+
         public const int NumberOfStations = 9;
 
         private static bool IsInitialized = false;
@@ -319,8 +320,25 @@ namespace FlightControl.Logic
 
         }
 
+        /// <summary>
+        /// Retrieves information about a station
+        /// </summary>
+        /// <param name="station">The station number</param>
+        /// <returns>Information about a station</returns>
+        public static SlotInfo GetStationInfo(int station)
+        {
+            return _slots[station - 1].ToInfo();
+        }
 
-
+        /// <summary>
+        /// Retrieves information on all stations
+        /// </summary>
+        /// <returns>Information about all stations</returns>
+        public static List<SlotInfo> GetStations()
+        {
+            return _slots.Select(x => x.ToInfo()).ToList();
+        }
+        
 
         /// <summary>
         /// Represents an entity in the chain, a leg
@@ -376,6 +394,15 @@ namespace FlightControl.Logic
                 PlaneArrivalToStation = DateTime.MinValue;
 
             }
+            /// <summary>
+            /// Convert a station to a UI publicly useable format
+            /// </summary>
+            /// <returns></returns>
+            public SlotInfo ToInfo()
+            {
+                return new SlotInfo(Number, OccupyingPlane, IsActive, PlaneArrivalToStation);
+            }
+
             public Slot(byte num)
             {
                 Number = num;
@@ -385,5 +412,24 @@ namespace FlightControl.Logic
             }
 
         }
+
+        /// <summary>
+        /// A class used for reading station information on the UI
+        /// </summary>
+        public class SlotInfo
+        {
+            public int Station { get; private set; }
+            public Airplane Plane { get; private set; }
+            public bool Active { get; private set; }
+            public double Arrival { get; private set; }//easier to use in javascript
+            public SlotInfo(int stationNum,Airplane plane, bool isActive, DateTime arrivalToStation)
+            {
+                Station = stationNum;
+                Plane = plane;
+                Active = isActive;
+                Arrival = arrivalToStation.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+            }
+        }
+
     }
 }

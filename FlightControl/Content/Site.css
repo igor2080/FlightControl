@@ -15,3 +15,12 @@ select,
 textarea {
     max-width: 280px;
 }
+.stations{
+    margin:1px;
+}
+.grid tr td{
+    width:50px;
+}
+.grid tr td div{
+    text-align:center;
+}

@@ -12,15 +12,17 @@ namespace FlightControl.Logic
         NotFound = 0,
         Invalid = 1,
         JustArrived = 2,
+        Occupied = 3,
+        //map(GUI) updating values
         LeftTheSystem = 4,
-        Moved = 8,
-        Occupied = 16,
-        Success = 32,
-        Error = 64,
-        MovementForbidden = 128,
-        Open = 256,
-        Closed = 512,
-        Started = 1024
+        Moved = 5,
+        Open = 6,
+        Closed = 7,
+        //
+        Success = 8,
+        Error = 9,
+        MovementForbidden = 10,
+        Started = 11
 
     }
     /// <summary>
@@ -51,7 +53,18 @@ namespace FlightControl.Logic
         /// <returns></returns>
         public static Information GetLogPiece()
         {
-            return logs[nextLog++];
+            if (logs.Count > nextLog)
+            {
+                Information log = logs[nextLog];
+                if (log != null)
+                {
+                    nextLog++;
+                    return log;
+                }
+
+            }
+            return null;
+
         }
 
 
@@ -68,7 +81,6 @@ namespace FlightControl.Logic
         public static List<Information> GetLogs(params InfoCode[] codes)
         {
             var loglist = new List<Information>();
-
             foreach (var code in codes)
             {
                 loglist.AddRange(logs.Where(x => x.Code == code));
@@ -82,7 +94,7 @@ namespace FlightControl.Logic
             Message = msg;
             Code = code;
             logs.Add(this);
-            
+
         }
     }
 
