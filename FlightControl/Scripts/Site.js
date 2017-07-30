@@ -13,6 +13,11 @@ function OpenStation() {
 
     });
 }
+function EmergencyLanding() {
+    $.get("/api/Airport/EmergencyLand?station=" + $("#station").val(), function (data) {
+
+    });
+}
 function UpdateMap(data) {
     if (data.Code == 4) {//left the system
 
@@ -67,4 +72,4 @@ setInterval(function () {
             });
         })(i);
     }
-}, 1000);
+}, 500);

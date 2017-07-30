@@ -22,8 +22,8 @@ namespace FlightControl.Logic
         Success = 8,
         Error = 9,
         MovementForbidden = 10,
-        Started = 11
-
+        Started = 11,
+        Emergency = 12
     }
     /// <summary>
     /// Used to provide information about specific actions; whether they were successful or not

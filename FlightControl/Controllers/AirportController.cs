@@ -41,5 +41,10 @@ namespace FlightControl.Controllers
             var result = Chain.GetStationInfo(station);
             return result;
         }
+        [HttpGet]
+        public void EmergencyLand(int station)
+        {
+            Chain.EmergencyLanding(station);
+        }
     }
 }

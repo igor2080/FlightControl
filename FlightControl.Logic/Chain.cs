@@ -16,11 +16,14 @@ namespace FlightControl.Logic
     {
         private static List<Slot> _slots;
 
-
         public const int NumberOfStations = 9;
 
         private static bool IsInitialized = false;
 
+        static InfoCode[] EmergencyClosedStations = new InfoCode[4];
+
+        //Station which needs an emergency landing
+        static int EmergencyStation = -1;
         /// <summary>
         /// Retrieves information about a specific station(leg)
         /// </summary>
@@ -39,14 +42,30 @@ namespace FlightControl.Logic
         /// <returns></returns>
         public static Information MovePlane(int planeNumber)
         {
+
+
             //find what station the plane is in. station = index + 1
             int index = _slots.FindIndex(x => x.GetCurrentPlane()?.ID == planeNumber);
-            if (_slots[index].IsActive == false)
-            {//station closed, no plane can get in or out
-                return new Information(index + 1, $"Station #{index + 1} is closed! cannot move planes in or to it", InfoCode.Closed);
-            }
             if (index != -1)//plane found
             {
+                if (EmergencyStation != -1)
+                {//Emergency landing!!
+                    if (index == EmergencyStation - 1)
+                    {
+                        if (_slots[3].IsActive && _slots[3].GetCurrentPlane() == null)
+                        {//station 4 is finally empty and operational, land the emergency plane
+                            _slots[3].AcceptPlane(_slots[index].GetCurrentPlane());
+                            _slots[index].RemovePlane();
+                            StopEmergency();
+                            return new Information(index + 1, "The emergency plane has landed!", InfoCode.Success);
+                        }
+                    }
+                }
+                if (_slots[index].IsActive == false)
+                {//station closed, no plane can get in or out
+                    return new Information(index + 1, $"Station #{index + 1} is closed! cannot move planes in or to it", InfoCode.Closed);
+                }
+
                 var plane = _slots[index].GetCurrentPlane();
                 if ((DateTime.Now - _slots[index].PlaneArrivalToStation).TotalSeconds < 4)
                 {//The plane has just arrived, do not move it
@@ -171,7 +190,51 @@ namespace FlightControl.Logic
             return planeMovement;
         }
 
+        /// <summary>
+        /// Perform an emergency landing for a specific station
+        /// </summary>
+        /// <param name="station">The station to land immediately</param>
+        /// <returns>Information about whether the operation succeded or failed</returns>
+        public static Information EmergencyLanding(int station)
+        {
+            if(_slots[station - 1].GetCurrentPlane() == null)
+            {
+                return new Information(station, "There is no plane in this station", InfoCode.Error);
+            }
+            if (EmergencyStation != -1)
+                return new Information(EmergencyStation, "There is an emergency landing already happening!", InfoCode.Error);
 
+            if (station > 0 && station < 4)
+            {
+                EmergencyStation = station;
+                EmergencyClosedStations[0] = CloseStation(1).Code;
+                EmergencyClosedStations[1] = CloseStation(2).Code;
+                EmergencyClosedStations[2] = CloseStation(3).Code;
+                EmergencyClosedStations[3] = CloseStation(8).Code;
+                return new Information(station, "An emergency landing is happening!!", InfoCode.Emergency);
+            }
+            else return new Information(-1, $"The entered station ({station}) is invalid for landing.", InfoCode.Invalid);
+        }
+
+        /// <summary>
+        /// End an emergency landing
+        /// </summary>
+        /// <returns></returns>
+        public static Information StopEmergency()
+        {
+            EmergencyStation = -1;
+            if (EmergencyClosedStations[0] == InfoCode.Closed)
+                OpenStation(1);
+            if (EmergencyClosedStations[1] == InfoCode.Closed)
+                OpenStation(2);
+            if (EmergencyClosedStations[2] == InfoCode.Closed)
+                OpenStation(3);
+            if (EmergencyClosedStations[3] == InfoCode.Closed)
+                OpenStation(8);
+
+            return new Information(-1, "Airport is now operating normally", InfoCode.Success);
+
+        }
 
         /// <summary>
         /// Get the next slot that a plane should go to, depending on it's direction
@@ -223,7 +286,7 @@ namespace FlightControl.Logic
                 return new Information(-1, "The system has started successfully!", InfoCode.Started);
             }
             return new Information(-1, "The system is already running.", InfoCode.Error);
-            
+
         }
         /// <summary>
         /// Add a plane into the system
@@ -338,7 +401,7 @@ namespace FlightControl.Logic
         {
             return _slots.Select(x => x.ToInfo()).ToList();
         }
-        
+
 
         /// <summary>
         /// Represents an entity in the chain, a leg
@@ -355,6 +418,10 @@ namespace FlightControl.Logic
             /// </summary>
             Airplane OccupyingPlane;
 
+            /// <summary>
+            /// Get the current plane in the station
+            /// </summary>
+            /// <returns></returns>
             public Airplane GetCurrentPlane() => OccupyingPlane;
 
 
@@ -374,7 +441,7 @@ namespace FlightControl.Logic
             /// <param name="plane">The plane to accept</param>
             public void AcceptPlane(Airplane plane)
             {
-                if (OccupyingPlane == null)
+                if (OccupyingPlane == null && IsActive)
                 {
                     OccupyingPlane = plane;
                     PlaneArrivalToStation = DateTime.Now;
@@ -386,7 +453,7 @@ namespace FlightControl.Logic
             }
 
             /// <summary>
-            /// Remove the plane from a leg
+            /// Remove the plane from a station
             /// </summary>
             public void RemovePlane()
             {
@@ -422,7 +489,7 @@ namespace FlightControl.Logic
             public Airplane Plane { get; private set; }
             public bool Active { get; private set; }
             public double Arrival { get; private set; }//easier to use in javascript
-            public SlotInfo(int stationNum,Airplane plane, bool isActive, DateTime arrivalToStation)
+            public SlotInfo(int stationNum, Airplane plane, bool isActive, DateTime arrivalToStation)
             {
                 Station = stationNum;
                 Plane = plane;
