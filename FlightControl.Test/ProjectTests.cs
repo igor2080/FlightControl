@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FlightControl.Data;
 using System.Collections.Generic;
 using FlightControl.Simulator;
-using FlightControl.Logic;
 using System.Net;
 using System.Text;
 using System.Threading;

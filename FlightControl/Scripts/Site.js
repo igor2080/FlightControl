@@ -26,12 +26,13 @@ function UpdateMap(data) {
 
     }
     else if (data.Code == 6) {//open
-        $("#station" + data.StationID).css("background-color", "lawngreen");
+        $("#station" + data.StationID).css("border", "5px solid lawngreen");
     }
     else if (data.Code == 7) {//closed
-        $("#station" + data.StationID).css("background-color", "red");
+        $("#station" + data.StationID).css("border", "5px solid red");
     }
 }
+var scrolling = true;
 setInterval(function () {
     $.get("/api/Airport/GetLog", function (data) {
         if (data !== null) {
@@ -47,6 +48,8 @@ setInterval(function () {
             if (data.Code >= 4 && data.Code <= 7) {
                 UpdateMap(data);
             }
+            if(scrolling)
+            $('#logger').scrollTop($('#logger')[0].scrollHeight);
         }
     });
     
@@ -58,11 +61,12 @@ setInterval(function () {
                 //data.Active
                 //data.Arrival
                 
-                $("#station" + n).css("background-color", data.Active ? "lawngreen" : "red");
+                $("#station" + n).css("border", data.Active ? "5px solid lawngreen" : "5px solid red");
                 if (data.Plane != null) {
                     $("#station" + n).empty();
                     $("#station" + n).append("✈");
-                    var planetime =new Date(new Date(Date.now()).getTime() -  new Date(data.Arrival).getTime());
+                    var planetime = new Date(new Date(Date.now()).getTime() - new Date(data.Arrival).getTime());
+                    $("#station" + n).css('color', '#' + data.Plane.ID);
                     $("#station" + n).append(planetime.getMinutes() + ":" + planetime.getSeconds());
                     $("#station" + n).append("\n#" + data.Plane.ID);
                     $("#station" + n).append("\n" + (data.Plane.Landing ? "Landing" : "Departing"));

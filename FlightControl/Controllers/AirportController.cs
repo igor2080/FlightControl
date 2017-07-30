@@ -1,4 +1,4 @@
-﻿using FlightControl.Logic;
+﻿using FlightControl.Data;
 using FlightControl.Simulator;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace FlightControl.Controllers
             return result.Message;
         }
         [HttpGet]
-        public Chain.SlotInfo GetStation(int station)
+        public SlotInfo GetStation(int station)
         {
             var result = Chain.GetStationInfo(station);
             return result;

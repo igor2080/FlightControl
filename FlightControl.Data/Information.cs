@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FlightControl.Logic
+namespace FlightControl.Data
 {
     public enum InfoCode
     {
