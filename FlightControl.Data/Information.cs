@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -23,13 +24,17 @@ namespace FlightControl.Data
         Error = 9,
         MovementForbidden = 10,
         Started = 11,
-        Emergency = 12
+        Emergency = 12,
+        Saved = 13
     }
     /// <summary>
     /// Used to provide information about specific actions; whether they were successful or not
     /// </summary>
     public class Information
     {
+        [Key]
+        public int InformationID { get; internal set; }
+
         static List<Information> logs = new List<Information>();
         static int nextLog = 0;
         /// <summary>
@@ -47,6 +52,10 @@ namespace FlightControl.Data
         /// </summary>
         public InfoCode Code { get; set; }
 
+        public Information()
+        {
+
+        }
         /// <summary>
         /// Get a single log piece from the log queue
         /// </summary>
@@ -68,10 +77,21 @@ namespace FlightControl.Data
         }
 
 
-        public static bool SaveLogsToDB()
+        public static void SaveLogsToDB()
         {
             //TODO: dump all logs from list to DB(reset the next log back to 0)
-            return false;
+            if (logs.Any())
+            {
+                using (var context=new AirportContext())
+                {                    
+                    context.Logs.AddRange(logs);
+                    context.SaveChanges();
+                    logs.Clear();
+                    nextLog = 0;
+                    new Information(-1, "Saved logs to database!", InfoCode.Saved);
+                }
+            }
+            
         }
         /// <summary>
         /// Gets a filtered list of logs based on the codes

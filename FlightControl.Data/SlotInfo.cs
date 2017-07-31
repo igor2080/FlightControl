@@ -11,10 +11,15 @@ namespace FlightControl.Data
     /// </summary>
     public class SlotInfo
     {
+        public int SlotInfoID { get; internal set; }
         public int Station { get; private set; }
         public Airplane Plane { get; private set; }
         public bool Active { get; private set; }
         public double Arrival { get; private set; }//easier to use in javascript
+        public SlotInfo()
+        {
+
+        }
         public SlotInfo(int stationNum, Airplane plane, bool isActive, DateTime arrivalToStation)
         {
             Station = stationNum;

@@ -14,6 +14,8 @@ namespace FlightControl.Data
     public static class Main
     {
         static System.Timers.Timer clock = new System.Timers.Timer(5000);
+        static System.Timers.Timer dbClock = new System.Timers.Timer(6000);//TODO:return timer to 1 minute(add a zero)
+
         static bool started = false;
         /// <summary>
         /// Perform an tick in the system when the timer elapses
@@ -64,13 +66,29 @@ namespace FlightControl.Data
         {
             if (!started)
             {
+                string path = AppDomain.CurrentDomain.BaseDirectory;
+                AppDomain.CurrentDomain.SetData("DataDirectory", path);
                 clock.Elapsed += Clock_Elapsed;
+                dbClock.Elapsed += DbClock_Elapsed;
                 Chain.InitializeChain();
-                LoadState();                
+                LoadState();
                 //TODO:log start sequence
+                dbClock.Start();
                 clock.Start();
                 started = true;
             }
+        }
+
+        /// <summary>
+        /// Save logs to database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void DbClock_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            dbClock.Stop();
+            Information.SaveLogsToDB();
+            dbClock.Start();
         }
 
         /// <summary>
