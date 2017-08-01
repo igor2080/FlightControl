@@ -46,5 +46,10 @@ namespace FlightControl.Controllers
         {
             Chain.EmergencyLanding(station);
         }
+        [HttpGet]
+        public void Backup()
+        {
+            Chain.Backup();
+        }
     }
 }

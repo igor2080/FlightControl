@@ -10,7 +10,7 @@ using System.Web.Routing;
 
 namespace FlightControl
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         protected void Application_Start()
         {
@@ -21,6 +21,7 @@ namespace FlightControl
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Main.Start();
+            
         }
     }
 }

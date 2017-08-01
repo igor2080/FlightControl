@@ -14,6 +14,8 @@ namespace FlightControl.Data
         public DbSet<Information> Logs { get; set; }
 
         public DbSet<SlotInfo> Slots { get; set; }
+
+        public DbSet<Airplane> Airplanes { get; set; }
         //TODO: everything db related
         public AirportContext() : base($@"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=Airport;Integrated Security=True")
         {

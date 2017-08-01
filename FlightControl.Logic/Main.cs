@@ -14,7 +14,7 @@ namespace FlightControl.Data
     public static class Main
     {
         static System.Timers.Timer clock = new System.Timers.Timer(5000);
-        static System.Timers.Timer dbClock = new System.Timers.Timer(6000);//TODO:return timer to 1 minute(add a zero)
+        static System.Timers.Timer dbClock = new System.Timers.Timer(60000);
 
         static bool started = false;
         /// <summary>
@@ -57,7 +57,7 @@ namespace FlightControl.Data
             clock.Start();
             return information;
         }
-
+        
 
         /// <summary>
         /// Launches on program start
@@ -70,9 +70,17 @@ namespace FlightControl.Data
                 AppDomain.CurrentDomain.SetData("DataDirectory", path);
                 clock.Elapsed += Clock_Elapsed;
                 dbClock.Elapsed += DbClock_Elapsed;
-                Chain.InitializeChain();
+                using (var context=new AirportContext())
+                {//First time run without database data will create empty stations and save them into the database
+                    if (context.Slots.ToList().Count() < 9)
+                    {
+                        context.Slots.AddRange(Enumerable.Range(1,9).Select(x=>new SlotInfo(x,null,true,DateTime.MinValue)).ToList());
+                        context.SaveChanges();
+                    }
+                }
                 LoadState();
                 //TODO:log start sequence
+                new Information(-1, "The system has started successfully!", InfoCode.Started);
                 dbClock.Start();
                 clock.Start();
                 started = true;
@@ -97,7 +105,11 @@ namespace FlightControl.Data
         private static void LoadState()
         {
             //TODO:implement state load 
-            
+            using (var context=new AirportContext())
+            {
+                var slots = context.Slots.Include("Plane").OrderBy(x=>x.Station).ToList();
+                Chain.Restore(slots);
+            }
         }
 
         /// <summary>

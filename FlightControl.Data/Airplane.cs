@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,11 +10,15 @@ namespace FlightControl.Data
 {
     public class Airplane
     {
+        
         /// <summary>
         /// Plane number
         /// </summary>
         public int ID { get; set; }
 
+
+        [Key]
+        public int AirplaneID { get; set; }
         /// <summary>
         /// Has the plane landed, or is taking off?
         /// </summary>
@@ -34,6 +40,10 @@ namespace FlightControl.Data
             this.Landing = IsLanding;
             this.LifeSpan = Lifespan;
             IsWorking = true;
+        }
+        private Airplane()
+        {
+
         }
 
         

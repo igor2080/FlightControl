@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +14,7 @@ namespace FlightControl.Data
     public class SlotInfo
     {
         public int SlotInfoID { get; internal set; }
-        public int Station { get; private set; }
+        public int Station { get; private set; }        
         public Airplane Plane { get; private set; }
         public bool Active { get; private set; }
         public double Arrival { get; private set; }//easier to use in javascript

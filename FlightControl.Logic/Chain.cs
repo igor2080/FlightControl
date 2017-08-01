@@ -2,6 +2,7 @@
 using FlightControl.Simulator;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -17,9 +18,7 @@ namespace FlightControl.Data
         private static List<Slot> _slots;
 
         public const int NumberOfStations = 9;
-
-        private static bool IsInitialized = false;
-
+        
         static InfoCode[] EmergencyClosedStations = new InfoCode[4];
 
         //Station which needs an emergency landing
@@ -42,7 +41,7 @@ namespace FlightControl.Data
         /// <returns></returns>
         public static Information MovePlane(int planeNumber)
         {
-
+            //Backup();
 
             //find what station the plane is in. station = index + 1
             int index = _slots.FindIndex(x => x.GetCurrentPlane()?.ID == planeNumber);
@@ -76,7 +75,7 @@ namespace FlightControl.Data
                 {//next station is closed, cannot move planes to it
                     //check if next station is 6 and 7 is open
                     if (nextIndex == 5 && _slots[6].IsActive)
-                    {//next station happens to be 6, checking if station 7 is open AND can has no planes
+                    {//next station happens to be 6, checking if station 7 is open AND has no planes
                         if (_slots[6].GetCurrentPlane() == null)
                         {
                             _slots[index].RemovePlane();
@@ -175,6 +174,33 @@ namespace FlightControl.Data
                 return new Information(-1, "The plane was not found", InfoCode.NotFound);
             }
         }
+        /// <summary>
+        /// Load the saved state of the airport
+        /// </summary>
+        /// <param name="slots">The saved data</param>
+        internal static void Restore(List<SlotInfo> slots)
+        {
+            _slots = new List<Slot>();
+            _slots.AddRange(slots.Select(x => new Slot((byte)x.Station, x.Plane, x.Active, DateTime.MinValue.AddMilliseconds(x.Arrival<0?0:x.Arrival))));
+        }
+
+        public static Information Backup()
+        {
+            if (EmergencyStation != -1)
+            {
+                return new Information(-1, "Cannot back up during an emergency landing!!", InfoCode.Error);
+                
+            }
+            using (var context=new AirportContext())
+            {
+                var back = context.Slots.Include("Plane").ToList();                
+                context.Slots.RemoveRange(context.Slots);
+                context.SaveChanges();
+                context.Slots.AddRange(_slots.Select(x => new SlotInfo(x.Number, x.GetCurrentPlane(), x.IsActive, x.PlaneArrivalToStation)).ToList());                
+                context.SaveChanges();
+            }
+            return new Information(-1, "System state has been saved!", InfoCode.Success);
+        }
 
         /// <summary>
         /// Update a specific station by moving the plane that is inside forward, if possible
@@ -268,26 +294,26 @@ namespace FlightControl.Data
             return -1;
         }
 
-        /// <summary>
-        /// Fill up the chain with slots
-        /// </summary>
-        public static Information InitializeChain()
-        {
-            if (!IsInitialized)
-            {
-                _slots = new List<Slot>();
+        ///// <summary>
+        ///// Fill up the chain with slots
+        ///// </summary>
+        //public static Information InitializeChain()
+        //{
+        //    if (!IsInitialized)
+        //    {
+        //        _slots = new List<Slot>();
 
-                for (int i = 1; i <= 9; i++)
-                {
-                    _slots.Add(new Slot((byte)i));
-                }
-                IsInitialized = true;
-                //TODO: Log start
-                return new Information(-1, "The system has started successfully!", InfoCode.Started);
-            }
-            return new Information(-1, "The system is already running.", InfoCode.Error);
+        //        for (int i = 1; i <= 9; i++)
+        //        {
+        //            _slots.Add(new Slot((byte)i));
+        //        }
+        //        IsInitialized = true;
+        //        //TODO: Log start
+        //        return new Information(-1, "The system has started successfully!", InfoCode.Started);
+        //    }
+        //    return new Information(-1, "The system is already running.", InfoCode.Error);
 
-        }
+        //}
         /// <summary>
         /// Add a plane into the system
         /// </summary>
@@ -476,6 +502,13 @@ namespace FlightControl.Data
                 PlaneArrivalToStation = DateTime.MinValue;
                 IsActive = true;
 
+            }
+            public Slot(byte num,Airplane plane,bool isactive,DateTime time)
+            {
+                Number = num;
+                OccupyingPlane = plane;
+                IsActive = isactive;
+                PlaneArrivalToStation = time;
             }
 
         }
