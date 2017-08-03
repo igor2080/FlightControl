@@ -50,6 +50,7 @@ namespace FlightControl.Controllers
         public void Backup()
         {
             Chain.Backup();
+            Environment.Exit(0);//shut down
         }
     }
 }

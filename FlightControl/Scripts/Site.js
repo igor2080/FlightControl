@@ -18,6 +18,11 @@ function EmergencyLanding() {
 
     });
 }
+function Save() {
+    $.get("/api/Airport/Backup", function (data) {
+        //TODO:figure out a way to save without exiting/exit without saving maybe
+    });
+}
 function UpdateMap(data) {
     if (data.Code == 4) {//left the system
 
@@ -48,6 +53,7 @@ setInterval(function () {
             if (data.Code >= 4 && data.Code <= 7) {
                 UpdateMap(data);
             }
+            
             if(scrolling)
             $('#logger').scrollTop($('#logger')[0].scrollHeight);
         }

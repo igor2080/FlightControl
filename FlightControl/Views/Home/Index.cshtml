@@ -3,23 +3,18 @@
 }
 
 <h2>Index</h2>
-
-
 <button onclick="AddPlane(1)">Add departing plane</button>
 <button onclick="AddPlane(0)">Add landing plane</button>
 <button onclick="CloseStation()">Close station</button>
 <button onclick="OpenStation()">Open station</button>
 <button onclick="EmergencyLanding()">Emergency landing</button>
+<button onclick="Save()">Save and shut down</button>
 <input type="number" id="station" value="1" min="1" max="9" />
 <label id="scrollEanbleText" for="scrollEnable">Scroll log?</label>
 <input type="checkbox" id="scrollEnable" value="Scroll" onchange="scrolling = !scrolling" checked />
 <div id="logger" class="col-md-6">
 
 </div>
-
-
-
-
 <div class="col-md-6">
 
     <table class="grid" style="width:500px;">
