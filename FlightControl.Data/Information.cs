@@ -83,12 +83,20 @@ namespace FlightControl.Data
             if (logs.Any(x=>x.Code!=InfoCode.Saved))
             {//prevent saving with just the saved message
                 using (var context=new AirportContext())
-                {                    
-                    context.Logs.AddRange(logs);
-                    context.SaveChanges();
-                    logs.Clear();
-                    nextLog = 0;
-                    new Information(-1, "Saved logs to database!", InfoCode.Saved);
+                {
+                    try
+                    {
+                        var templogs = logs;
+                        context.Logs.AddRange(templogs);
+                        context.SaveChanges();
+                        logs.Clear();
+                        nextLog = 0;
+                        new Information(-1, "Saved logs to database!", InfoCode.Saved);
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             

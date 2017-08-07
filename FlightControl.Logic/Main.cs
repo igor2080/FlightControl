@@ -15,13 +15,15 @@ namespace FlightControl.Data
     public static class Main
     {
         #region Constants
-        public const double TIMER = 6000;//system run timer(in milliseconds)
+        public const double TIMER = 600;//system run timer(in milliseconds)
         public const double DB_TIMER = 60000;//automatic log saving timer(in milliseconds)
-        public const double DELAY_TIMER = 4;//time a plane must remain in a station(in seconds)
-        public const double PRIORITY_TIMER = 15;//priority difference(in seconds) between stations 3 and 8(8>3)
+        public const double DELAY_TIMER = 0.5;//time a plane must remain in a station(in seconds)
+        public const double PRIORITY_TIMER = 1;//priority difference(in seconds) between stations 3 and 8(8>3)
         #endregion
 
-
+        /// <summary>
+        /// setInterval(function(){AddPlane(0); AddPlane(1)},1000);
+        /// </summary>
 
         
         static System.Timers.Timer clock = new System.Timers.Timer(TIMER);

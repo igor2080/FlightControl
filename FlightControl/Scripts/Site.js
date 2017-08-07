@@ -37,7 +37,11 @@ function UpdateMap(data) {
         $("#station" + data.StationID).css("border", "5px solid red");
     }
 }
+function ClearDB() {
+    $.get("/api/Airport/cleardb", function (data) {
 
+    });
+}
 var scrolling = true;
 setInterval(function () {
     try {

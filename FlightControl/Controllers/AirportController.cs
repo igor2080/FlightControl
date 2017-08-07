@@ -52,5 +52,10 @@ namespace FlightControl.Controllers
             Chain.Backup();
             Environment.Exit(0);//shut down
         }
+        [HttpGet]
+        public void ClearDB()
+        {
+            Chain.ClearBackup();
+        }
     }
 }

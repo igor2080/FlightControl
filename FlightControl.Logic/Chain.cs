@@ -191,6 +191,17 @@ namespace FlightControl.Data
                 }
             }
         }
+
+        public static Information ClearBackup()
+        {
+            using (var context=new AirportContext())
+            {
+                context.Slots.RemoveRange(context.Slots.ToList());
+                context.SaveChanges();
+            }
+            return new Information(-1, "Backup data has been erased", InfoCode.Success);
+        }
+
         /// <summary>
         /// Load the saved state of the airport
         /// </summary>
