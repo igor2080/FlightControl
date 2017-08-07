@@ -34,9 +34,23 @@
         <div class="row">@RenderBody()</div>
         <div class="row">
             <hr />
-            <footer>
-                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-            </footer>
+            <script>
+                $('.stations').dblclick(function (x) {
+                    var num = Number(this.id.substring(7));
+                    if (this.style.border == "5px solid lawngreen") {
+                        $.get("/api/Airport/CloseStation?station="+num, function (data) {
+
+                        });
+                    }
+                    else {
+                        $.get("/api/Airport/OpenStation?station=" + num, function (data) {
+
+                        });
+                    }
+                    $('#station').val(num);
+                });
+                
+            </script>
         </div>
     </div>
 

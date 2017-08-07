@@ -27,8 +27,7 @@ namespace FlightControl.Data
 
             Update();
         }
-
-        static object _state = new object();
+        
 
         /// <summary>
         /// Main loop of the airport

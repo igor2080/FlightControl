@@ -24,7 +24,10 @@ textarea {
 .grid tr td div{
     text-align:center;
 }
+.grid{
+    margin:auto;
+}
 #logger{
-    height:500px;
+    height:300px;
     overflow-y:scroll;
 }
