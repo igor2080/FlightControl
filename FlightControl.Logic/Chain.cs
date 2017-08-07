@@ -69,7 +69,7 @@ namespace FlightControl.Data
                     }
 
                     var plane = _slots[index].GetCurrentPlane();
-                    if ((DateTime.Now - _slots[index].PlaneArrivalToStation).TotalSeconds < 4)
+                    if ((DateTime.Now - _slots[index].PlaneArrivalToStation).TotalSeconds < Main.DELAY_TIMER)
                     {//The plane has just arrived, do not move it
                         return new Information(index + 1, $"The plane #{plane.ID} cannot move yet, it has just arrived", InfoCode.JustArrived);
                     }
@@ -100,7 +100,7 @@ namespace FlightControl.Data
                         {
                             _slots[index].RemovePlane();
                             return new Information(0, $"Plane #{plane.ID} Has left the system!", InfoCode.LeftTheSystem);
-                            //TODO:log plane removal
+                            
                         }
                         else
                         {
@@ -116,29 +116,42 @@ namespace FlightControl.Data
                                 }
                                 else
                                 {//special conditions for station 4(interaction with 8 and 3)
+
                                     if (_slots[2].GetCurrentPlane() != null && _slots[7].GetCurrentPlane() != null)
                                     {//there are planes in both 3 and 8, compare timers for priority
-                                        bool Station3Priority = _slots[2].PlaneArrivalToStation <= _slots[7].PlaneArrivalToStation.AddSeconds(15.0);
+                                        bool Station3Priority = _slots[2].PlaneArrivalToStation <= _slots[7].PlaneArrivalToStation.AddSeconds(Main.PRIORITY_TIMER);
                                         //station 3 has priority of 15 seconds over 8 
                                         if (index == 2)
                                         {
-                                            if (Station3Priority)
-                                            {//current plane is from station 3, and has priority
+                                            if (Station3Priority && _slots[2].IsActive)
+                                            {//current plane is from station 3, and has priority, and active
                                                 _slots[index].RemovePlane();
                                                 _slots[nextIndex].AcceptPlane(plane);
                                                 //TODO:log plane movement
                                                 return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                                             }
+                                            else if(!_slots[7].IsActive)
+                                            {//station is inactive, allow the other plane to pass
+                                                _slots[index].RemovePlane();
+                                                _slots[nextIndex].AcceptPlane(plane);
+                                                return new Information(index + 1, $"Priority ignored, other station closed; Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
+                                            }
                                             else return new Information(index + 1, $"The plane #{plane.ID} isn't allowed to move due to priority", InfoCode.MovementForbidden);
                                         }
                                         else //index == 7
                                         {
-                                            if (!Station3Priority)
-                                            {//current plane is from station 8, and has priority
+                                            if (!Station3Priority && _slots[7].IsActive)
+                                            {//current plane is from station 8, and has priority, and active
                                                 _slots[index].RemovePlane();
                                                 _slots[nextIndex].AcceptPlane(plane);
                                                 //TODO:log plane movement
                                                 return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
+                                            }
+                                            else if (!_slots[2].IsActive)
+                                            {//station is inactive, allow the other plane to pass
+                                                _slots[index].RemovePlane();
+                                                _slots[nextIndex].AcceptPlane(plane);
+                                                return new Information(index + 1, $"Priority ignored, other station closed; Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                                             }
                                             else return new Information(index + 1, $"The plane #{plane.ID} isn't allowed to move due to priority", InfoCode.MovementForbidden);
                                         }
