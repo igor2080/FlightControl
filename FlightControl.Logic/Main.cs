@@ -116,7 +116,6 @@ namespace FlightControl.Data
         /// </summary>
         private static void LoadState()
         {
-            //TODO:implement state load 
             using (var context = new AirportContext())
             {
                 var slots = context.Slots.Include("Plane").OrderBy(x => x.Station).ToList();

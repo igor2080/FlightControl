@@ -79,7 +79,6 @@ namespace FlightControl.Data
 
         public static void SaveLogsToDB()
         {
-            //TODO: dump all logs from list to DB(reset the next log back to 0)
             if (logs.Any(x=>x.Code!=InfoCode.Saved))
             {//prevent saving with just the saved message
                 using (var context=new AirportContext())

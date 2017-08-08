@@ -112,7 +112,6 @@ namespace FlightControl.Data
                                 {
                                     _slots[index].RemovePlane();
                                     _slots[nextIndex].AcceptPlane(plane);
-                                    //TODO:log plane movement
 
                                     return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                                 }
@@ -129,7 +128,6 @@ namespace FlightControl.Data
                                             {//current plane is from station 3, and has priority, and active
                                                 _slots[index].RemovePlane();
                                                 _slots[nextIndex].AcceptPlane(plane);
-                                                //TODO:log plane movement
                                                 return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                                             }
                                             else if(!_slots[7].IsActive)
@@ -146,7 +144,6 @@ namespace FlightControl.Data
                                             {//current plane is from station 8, and has priority, and active
                                                 _slots[index].RemovePlane();
                                                 _slots[nextIndex].AcceptPlane(plane);
-                                                //TODO:log plane movement
                                                 return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                                             }
                                             else if (!_slots[2].IsActive)
@@ -162,7 +159,6 @@ namespace FlightControl.Data
                                     {//only one plane in either station, proceed as normal
                                         _slots[index].RemovePlane();
                                         _slots[nextIndex].AcceptPlane(plane);
-                                        //TODO:log plane movement
                                         return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                                     }
                                 }
@@ -178,7 +174,6 @@ namespace FlightControl.Data
                                         nextIndex = 6;
                                         _slots[index].RemovePlane();
                                         _slots[nextIndex].AcceptPlane(plane);
-                                        //TODO:log plane movement
                                         return new Information(index + 1, $"Plane #{plane.ID} moved from station {index + 1} to station {nextIndex + 1}", InfoCode.Moved);
                                     }
                                 }
@@ -325,26 +320,6 @@ namespace FlightControl.Data
             return -1;
         }
 
-        ///// <summary>
-        ///// Fill up the chain with slots
-        ///// </summary>
-        //public static Information InitializeChain()
-        //{
-        //    if (!IsInitialized)
-        //    {
-        //        _slots = new List<Slot>();
-
-        //        for (int i = 1; i <= 9; i++)
-        //        {
-        //            _slots.Add(new Slot((byte)i));
-        //        }
-        //        IsInitialized = true;
-        //        //TODO: Log start
-        //        return new Information(-1, "The system has started successfully!", InfoCode.Started);
-        //    }
-        //    return new Information(-1, "The system is already running.", InfoCode.Error);
-
-        //}
         /// <summary>
         /// Add a plane into the system
         /// </summary>
@@ -358,12 +333,10 @@ namespace FlightControl.Data
                 if (_slots[0].GetCurrentPlane() == null && _slots[0].IsActive)//no plane in slot 1 and the slot is operational
                 {
                     _slots[0].AcceptPlane(plane);
-                    //TODO:log plane acceptance
                     return new Information(1, $"Plane #{plane.ID} accepted successfully into station 1", InfoCode.Success);
                 }
                 else//there is a plane in slot 1, plane is rejected
                 {
-                    //TODO:log plane rejection
                     return new Information(-1, "There is no room for a plane, or the station is not operational", InfoCode.Error);
                 }
             }
@@ -378,7 +351,6 @@ namespace FlightControl.Data
                     else
                     {
                         _slots[5].AcceptPlane(plane);
-                        //TODO:log plane acceptance
                         return new Information(6, $"Plane #{plane.ID} accepted successfully into station 6", InfoCode.Success); ;
                     }
                 }
@@ -389,13 +361,11 @@ namespace FlightControl.Data
                         return new Information(7, "Cannot have two departing planes at docking stations!", InfoCode.Occupied);
                     }
                     _slots[6].AcceptPlane(plane);
-                    //TODO:log plane acceptance
                     return new Information(7, $"Plane #{plane.ID} accepted successfully into station 7", InfoCode.Success); ;
                 }
                 else//both slots are taken, plane is rejected
                 {
                     return new Information(-1, "There is no room for a plane, the stations are either closed or occupied", InfoCode.Error);
-                    //TODO:log plane rejection
 
                 }
 
@@ -502,10 +472,6 @@ namespace FlightControl.Data
                 {
                     OccupyingPlane = plane;
                     PlaneArrivalToStation = DateTime.Now;
-                }
-                else
-                {
-                    //TODO: log error plane collision!!
                 }
             }
 

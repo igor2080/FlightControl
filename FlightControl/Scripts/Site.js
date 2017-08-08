@@ -20,7 +20,6 @@ function EmergencyLanding() {
 }
 function Save() {
     $.get("/api/Airport/Backup", function (data) {
-        //TODO:figure out a way to save without exiting/exit without saving maybe
     });
 }
 function UpdateMap(data) {
