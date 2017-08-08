@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,14 +19,15 @@ namespace FlightControl.Data
         public const double TIMER = 6000;//system run timer(in milliseconds)
         public const double DB_TIMER = 60000;//automatic log saving timer(in milliseconds)
         public const double DELAY_TIMER = 4;//time a plane must remain in a station(in seconds)
-        public const double PRIORITY_TIMER = 15;//priority difference(in seconds) between stations 3 and 8(8>3)
+        public const double PRIORITY_TIMER = 10;//priority difference(in seconds) between stations 3 and 8(3>8)
         #endregion
-
+        ///best tested result values: 600,0,1
+        
         /// <summary>
         /// setInterval(function(){AddPlane(0); AddPlane(1)},1000);
         /// </summary>
 
-        
+
         static System.Timers.Timer clock = new System.Timers.Timer(TIMER);
         static System.Timers.Timer dbClock = new System.Timers.Timer(DB_TIMER);
 

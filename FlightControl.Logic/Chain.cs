@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace FlightControl.Data
         
         static InfoCode[] EmergencyClosedStations = new InfoCode[4];
 
+        
         //Station which needs an emergency landing
         static int EmergencyStation = -1;
         /// <summary>
@@ -43,7 +45,7 @@ namespace FlightControl.Data
         public static Information MovePlane(int planeNumber)
         {
             //Backup();
-
+            
             lock (stick)//crash prevention lock
             {
                 //find what station the plane is in. station = index + 1

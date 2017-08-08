@@ -96,4 +96,4 @@ setInterval(function () {
     }
     
     
-}, 500);
+}, 50);
