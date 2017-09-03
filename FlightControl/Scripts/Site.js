@@ -41,17 +41,24 @@ function ClearDB() {
 
     });
 }
+$(document).ready(function () {
+    $('.clog').change(function () {
+        $('.m' + this.id.substring(1)).css('display',this.checked?'block':'none');
+        
+    })
+});
+
 var scrolling = true;
 setInterval(function () {
     try {
         $.get("/api/Airport/GetLog", function (data) {
-            if (data !== null && document.getElementById('c' + data.Code).checked) {
+            if (data !== null) {
                 //data.StationID
                 //data.Message
                 //data.Code
                
                     var para = document.createElement("p");
-                    para.setAttribute('name', data.Code);
+                    para.setAttribute('class', 'm'+data.Code);
                     var number = parseInt(data.Message.substring(data.Message.indexOf('#') + 1));
                     para.style.color = "#" + number;
                     var node = document.createTextNode(data.Message);
