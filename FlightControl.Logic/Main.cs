@@ -22,24 +22,24 @@ namespace FlightControl.Data
         public const double PRIORITY_TIMER = 10;//priority difference(in seconds) between stations 3 and 8(3>8)
         #endregion
         ///best tested result values: 600,0,1
-        
+
         /// <summary>
         /// setInterval(function(){AddPlane(0); AddPlane(1)},1000);
         /// </summary>
 
-
+        //A clock for tracking program events
         static System.Timers.Timer clock = new System.Timers.Timer(TIMER);
+        //A clock for tracking saving to database
         static System.Timers.Timer dbClock = new System.Timers.Timer(DB_TIMER);
 
         static bool started = false;
         /// <summary>
-        /// Perform an tick in the system when the timer elapses
+        /// Perform a tick in the system when the timer elapses
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private static void Clock_Elapsed(object sender, ElapsedEventArgs e)
         {
-
             Update();
         }
 
@@ -56,14 +56,14 @@ namespace FlightControl.Data
             if (planeToUpdate == null)
             {
                 Parallel.For(1, 10, (i) =>
-                {
-                    if (Chain.GetPlaneInfo(i) != null)
+                {//update each station
+                    if (Chain.GetPlaneInfo(i) != null)//that has a plane in it
                         information.Add(Chain.UpdateStation(i));
 
                 });
             }
             else
-            {
+            {//manual plane update
                 var info = Chain.MovePlane(planeToUpdate.ID);
                 information.Add(info);
 
@@ -100,7 +100,7 @@ namespace FlightControl.Data
         }
 
         /// <summary>
-        /// Save logs to database
+        /// Save logs to the database
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -112,7 +112,7 @@ namespace FlightControl.Data
         }
 
         /// <summary>
-        /// Loads an existing state from the database
+        /// Loads the existing state from the database
         /// </summary>
         private static void LoadState()
         {
@@ -123,13 +123,5 @@ namespace FlightControl.Data
             }
         }
 
-        /// <summary>
-        /// Refresh the timer
-        /// </summary>
-        private static void ResetTimer()
-        {
-            clock.Stop();
-            clock.Start();
-        }
     }
 }

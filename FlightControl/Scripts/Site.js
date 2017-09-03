@@ -45,22 +45,25 @@ var scrolling = true;
 setInterval(function () {
     try {
         $.get("/api/Airport/GetLog", function (data) {
-            if (data !== null) {
+            if (data !== null && document.getElementById('c' + data.Code).checked) {
                 //data.StationID
                 //data.Message
                 //data.Code
-                var para = document.createElement("p");
-                var number = parseInt(data.Message.substring(data.Message.indexOf('#') + 1));
-                para.style.color = "#" + number;
-                var node = document.createTextNode(data.Message);
-                para.appendChild(node);
-                $("#logger").append(para);
-                if (data.Code >= 4 && data.Code <= 7) {
-                    UpdateMap(data);
-                }
+               
+                    var para = document.createElement("p");
+                    para.setAttribute('name', data.Code);
+                    var number = parseInt(data.Message.substring(data.Message.indexOf('#') + 1));
+                    para.style.color = "#" + number;
+                    var node = document.createTextNode(data.Message);
+                    para.appendChild(node);
+                    $("#logger").append(para);
+                    if (data.Code >= 4 && data.Code <= 7) {
+                        UpdateMap(data);
+                    }
 
-                if (scrolling)
-                    $('#logger').scrollTop($('#logger')[0].scrollHeight);
+                    if (scrolling)
+                        $('#logger').scrollTop($('#logger')[0].scrollHeight);
+                
             }
         });
     } catch (e) {

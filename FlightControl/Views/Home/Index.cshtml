@@ -1,9 +1,4 @@
-﻿@{
-    ViewBag.Title = "Index";
-}
-
-<h2>Index</h2>
-<div class="row">
+﻿<div class="row">
     <button onclick="AddPlane(1)">Add departing plane</button>
     <button onclick="AddPlane(0)">Add landing plane</button>
     <button onclick="CloseStation()">Close station</button>
@@ -19,8 +14,54 @@
     Note:You can double click a station to close/open it
 </div>
 <div class="row">
-    <div id="logger" class="col-xs-12">
+    <div id="logger" class="col-xs-10">
 
+    </div>
+    <div id="loggerToggle" class="col-xs-2">
+        <div>
+            <input type="checkbox" id="c2" checked value="" />
+            <label for="c2">Just arrived</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c8" checked value="" />
+            <label for="c8">Success messages</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c9" checked value="" />
+            <label for="c9">Error messages</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c6" checked value="" />
+            <label for="c6">Opening stations</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c7" checked value="" />
+            <label for="c7">Closing stations</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c4" checked value="" />
+            <label for="c4">Left the system</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c5" checked value="" />
+            <label for="c5">Plane movement</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c10" checked value="" />
+            <label for="c10">Forbidden movement</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c3" checked value="" />
+            <label for="c3">Station occupied</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c13" checked value="" />
+            <label for="c13">Log saving</label>
+        </div>
+        <div>
+            <input type="checkbox" id="c12" checked value="" />
+            <label for="c12">Emergency messages</label>
+        </div>
     </div>
 </div>
 <div class="row">

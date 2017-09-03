@@ -76,7 +76,7 @@ namespace FlightControl.Data
 
         }
 
-
+        //Save newly created logs to the database
         public static void SaveLogsToDB()
         {
             if (logs.Any(x=>x.Code!=InfoCode.Saved))
@@ -115,6 +115,12 @@ namespace FlightControl.Data
             return loglist;
         }
 
+        /// <summary>
+        /// Initialize a new piece of log information, it is automatically stored upon creation in the log list
+        /// </summary>
+        /// <param name="stationid">A relevant station id for which the log is mean for</param>
+        /// <param name="msg">The msesage to log</param>
+        /// <param name="code">The appropriate code to go with the message</param>
         public Information(int stationid, string msg, InfoCode code)
         {
             StationID = stationid;
