@@ -43,8 +43,8 @@ function ClearDB() {
 }
 $(document).ready(function () {
     $('.clog').change(function () {
-        $('.m' + this.id.substring(1)).css('display',this.checked?'block':'none');
-        
+        $('.m' + this.id.substring(1)).css('display', this.checked ? 'block' : 'none');
+
     })
 });
 
@@ -56,21 +56,25 @@ setInterval(function () {
                 //data.StationID
                 //data.Message
                 //data.Code
-               
-                    var para = document.createElement("p");
-                    para.setAttribute('class', 'm'+data.Code);
-                    var number = parseInt(data.Message.substring(data.Message.indexOf('#') + 1));
-                    para.style.color = "#" + number;
-                    var node = document.createTextNode(data.Message);
-                    para.appendChild(node);
-                    $("#logger").append(para);
-                    if (data.Code >= 4 && data.Code <= 7) {
-                        UpdateMap(data);
-                    }
 
-                    if (scrolling)
-                        $('#logger').scrollTop($('#logger')[0].scrollHeight);
-                
+                var para = document.createElement("p");
+                if (!$('#c' + data.Code)[0].checked)
+                {
+                    para.style.display = 'none';
+                }
+                para.setAttribute('class', 'm' + data.Code);
+                var number = parseInt(data.Message.substring(data.Message.indexOf('#') + 1));
+                para.style.color = "#" + number;
+                var node = document.createTextNode(data.Message);
+                para.appendChild(node);
+                $("#logger").append(para);
+                if (data.Code >= 4 && data.Code <= 7) {
+                    UpdateMap(data);
+                }
+
+                if (scrolling)
+                    $('#logger').scrollTop($('#logger')[0].scrollHeight);
+
             }
         });
     } catch (e) {
@@ -103,6 +107,6 @@ setInterval(function () {
     } catch (e) {
 
     }
-    
-    
+
+
 }, 500);
